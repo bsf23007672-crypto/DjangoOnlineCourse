@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 
-from .models import Course, Question, Choice
+from .models import Course, Question, Choice, Submission
 
 
 def course_details(request, course_id):
@@ -11,6 +11,8 @@ def course_details(request, course_id):
         "course_details_bootstrap.html",
         {"course": course}
     )
+
+
 def exam(request):
     questions = Question.objects.all()
 
@@ -19,6 +21,7 @@ def exam(request):
         "exam.html",
         {"questions": questions}
     )
+
 
 def submit(request):
     if request.method == "POST":
@@ -35,6 +38,11 @@ def submit(request):
                     selected_choice = Choice.objects.get(
                         id=selected_choice_id,
                         question=question
+                    )
+
+                    Submission.objects.create(
+                        question=question,
+                        selected_choice=selected_choice
                     )
 
                     if selected_choice.is_correct:
